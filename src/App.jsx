@@ -17,17 +17,24 @@ function App() {
   };
 
   const handleChange = (event) => {
-    const newQuery = event.target.value;
+    setTimeout(() => {
+      const newQuery = event.target.value;
 
-    setQuery(event.target.value);
-    if (newQuery.length < 4) {
-      setError("No se pueden buscar peliculas con menos de 4 caracteres");
-      return;
-    }
-    if (newQuery.length >= 4) {
-      setError(" ");
-      return;
-    }
+      if (newQuery.length < 4) {
+        setError("No se pueden buscar peliculas con menos de 4 caracteres");
+        return;
+      } else if (newQuery.length >= 4) {
+        setQuery(event.target.value);
+        setError(" ");
+        return;
+      } else if (newQuery.length === 0) {
+        setError(" ");
+        return;
+      } else {
+        setQuery(event.target.value);
+        return;
+      }
+    }, 2000);
   };
 
   return (

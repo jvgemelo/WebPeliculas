@@ -8,24 +8,44 @@ function Film({ title }) {
   const [loading, setLoading] = useState(false);
   // const [loading, setLoading] = useState(false);
 
+  const cogerPelicula = async (title) => {
+    try {
+      const response = await fetch(
+        `https://www.omdbapi.com/?i=tt3896198&apikey=1b5e2cc8&s=${title}`
+      );
+
+      if (response.ok) {
+        setLoading(true);
+        await response
+          .json()
+          .then((jsonData) => {
+            if (jsonData.Search === undefined) {
+              console.log(" Peliculas asociadas no encontradas");
+              setLoading(false);
+            } else {
+              for (let i = 0; i < jsonData.Search.length; i++) {
+                // console.log(jsonData.Search[i]);
+                const mappedMovies = jsonData.Search.map((movie) => ({
+                  id: movie.imdbID,
+                  title: movie.Title,
+                  year: movie.Year,
+                  image: movie.Poster,
+                }));
+                setFilmList(mappedMovies);
+                setLoading(false);
+                // console.log(mappedMovies);
+              }
+            }
+          })
+          .catch("Busqueda no encontrada........");
+      }
+    } catch (error) {
+      console.log("Error fetching" + error);
+    }
+  };
+
   useEffect(() => {
-    setLoading(true);
-    fetch(`https://www.omdbapi.com/?i=tt3896198&apikey=1b5e2cc8&s=${title}`)
-      .then((response) => response.json())
-      .then((jsonData) => {
-        for (let i = 0; i < jsonData.Search.length; i++) {
-          // console.log(jsonData.Search[i]);
-          const mappedMovies = jsonData.Search.map((movie) => ({
-            id: movie.imdbID,
-            title: movie.Title,
-            year: movie.Year,
-            image: movie.Poster,
-          }));
-          setFilmList(mappedMovies);
-          setLoading(false);
-          // console.log(mappedMovies);
-        }
-      });
+    cogerPelicula(title);
   }, [title]);
 
   // const mappedMovies = filmList?.map((movie) => ({
