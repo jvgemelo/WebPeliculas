@@ -3,10 +3,9 @@ import noImageAvaliable from "../../assets/noImageAvaliable.jpg";
 
 // const CONST_ENDPOINT_FILM_BY_NAME = `https://www.omdbapi.com/?i=tt3896198&apikey=1b5e2cc8&s=${title}`
 
-function Film({ title }) {
+function Film({ title, order }) {
   const [filmList, setFilmList] = useState([]);
   const [loading, setLoading] = useState(false);
-  // const [loading, setLoading] = useState(false);
 
   const cogerPelicula = async (title) => {
     try {
@@ -46,14 +45,11 @@ function Film({ title }) {
 
   useEffect(() => {
     cogerPelicula(title);
-  }, [title]);
+  }, [title, order]);
 
-  // const mappedMovies = filmList?.map((movie) => ({
-  //   id: movie.imdbID,
-  //   title: movie.title,
-  //   year: movie.year,
-  //   image: movie.image,
-  // }));
+  const sortByYear = order
+    ? filmList.sort((a, b) => b.year - a.year)
+    : filmList;
 
   return (
     <>
@@ -80,7 +76,7 @@ function Film({ title }) {
         </div>
       ) : filmList ? (
         <li className="grid xl:grid-cols-4  md:grid-cols-3 sm:grid-cols-2 xs:grid-cols-1  gap-8 items-end justi w-full m-0 p-0 ">
-          {filmList.map((movies) => (
+          {sortByYear.map((movies) => (
             <li className="flex flex-col justify-between" key={movies?.id}>
               <div>
                 <div className="mb-auto mt-0">

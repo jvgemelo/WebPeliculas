@@ -7,13 +7,18 @@ function App() {
   // const [dato, setDato] = useState("shrek");
   const [query, setQuery] = useState("Star wars");
   const [error, setError] = useState(null);
+  const [sort, setSort] = useState(false);
   const inputRef = useRef();
 
-  const recogerPelicula = (event) => {
+  const handleSubmit = (event) => {
     event.preventDefault();
     const value = inputRef.current.value;
-    console.log(value);
+    console.log("Hola soy el submit ", value);
     setQuery(document.getElementById("input").value);
+  };
+
+  const handleSort = () => {
+    setSort(!sort);
   };
 
   const handleChange = (event) => {
@@ -46,17 +51,16 @@ function App() {
         <div className=" ">
           <form
             className="form flex flex-row justify-end items-center align-bottom mr-10 space-x-4"
-            onSubmit={recogerPelicula}
+            onSubmit={handleSubmit}
           >
             <input
               ref={inputRef}
               onChange={handleChange}
-              // value={query}
               className="p-2"
               placeholder="Buscar peliculas..."
               id="input"
             />
-
+            <input type="checkbox" onChange={handleSort} checked={sort} />
             <button type="submit" className="py-2 px-6 my-3 bg-slate-500 ">
               Buscar
             </button>
@@ -70,7 +74,7 @@ function App() {
       </header>
 
       <main className="flex justify-center ">
-        <Film title={query} />
+        <Film title={query} order={sort} />
       </main>
     </div>
   );
