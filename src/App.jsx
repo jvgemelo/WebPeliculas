@@ -1,10 +1,8 @@
 import { useState, useRef } from "react";
-
 import "./index.css";
 import Film from "./components/film/film";
 
 function App() {
-  // const [dato, setDato] = useState("shrek");
   const [query, setQuery] = useState("Star wars");
   const [error, setError] = useState(null);
   const [sort, setSort] = useState(false);

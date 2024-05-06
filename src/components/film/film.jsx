@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import noImageAvaliable from "../../assets/noImageAvaliable.jpg";
 
 // const CONST_ENDPOINT_FILM_BY_NAME = `https://www.omdbapi.com/?i=tt3896198&apikey=1b5e2cc8&s=${title}`
@@ -22,18 +22,8 @@ function Film({ title, order }) {
               console.log(" Peliculas asociadas no encontradas");
               setLoading(false);
             } else {
-              for (let i = 0; i < jsonData.Search.length; i++) {
-                // console.log(jsonData.Search[i]);
-                const mappedMovies = jsonData.Search.map((movie) => ({
-                  id: movie.imdbID,
-                  title: movie.Title,
-                  year: movie.Year,
-                  image: movie.Poster,
-                }));
-                setFilmList(mappedMovies);
-                setLoading(false);
-                // console.log(mappedMovies);
-              }
+              setFilmList(jsonData.Search);
+              setLoading(false);
             }
           })
           .catch("Busqueda no encontrada........");
@@ -47,9 +37,13 @@ function Film({ title, order }) {
     cogerPelicula(title);
   }, [title, order]);
 
-  const sortByYear = order
-    ? filmList.sort((a, b) => b.year - a.year)
-    : filmList;
+  useMemo(() => {
+    if (order) {
+      const newArr = filmList.sort((a, b) => b.Year - a.Year);
+      return newArr;
+    }
+    return;
+  }, [order, filmList]);
 
   return (
     <>
@@ -76,12 +70,12 @@ function Film({ title, order }) {
         </div>
       ) : filmList ? (
         <li className="grid xl:grid-cols-4  md:grid-cols-3 sm:grid-cols-2 xs:grid-cols-1  gap-8 items-end justi w-full m-0 p-0 ">
-          {sortByYear.map((movies) => (
-            <li className="flex flex-col justify-between" key={movies?.id}>
+          {filmList.map((movies) => (
+            <li className="flex flex-col justify-between" key={movies?.imdbID}>
               <div>
                 <div className="mb-auto mt-0">
-                  <h3 className="max-w-72 ">{movies?.title}</h3>
-                  <p className="mb-2">{movies?.year}</p>
+                  <h3 className="max-w-72 ">{movies?.Title}</h3>
+                  <p className="mb-2">{movies?.Year}</p>
                 </div>
                 <div className="">
                   {movies.image === "N/A" ? (
@@ -93,7 +87,7 @@ function Film({ title, order }) {
                   ) : (
                     <img
                       className="w-80 h-96"
-                      src={movies?.image}
+                      src={movies?.Poster}
                       alt={movies?.Title}
                     />
                   )}
